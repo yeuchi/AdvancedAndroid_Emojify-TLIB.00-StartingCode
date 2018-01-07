@@ -22,8 +22,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -159,16 +161,19 @@ public class MainActivity extends AppCompatActivity {
                 // Get the path of the temporary file
                 mTempPhotoPath = photoFile.getAbsolutePath();
 
-                // Get the content URI for the image file
-                Uri photoURI = FileProvider.getUriForFile(this,
-                        FILE_PROVIDER_AUTHORITY,
-                        photoFile);
+                if(null!=mTempPhotoPath)
+                {
+                    // Get the content URI for the image file
+                    Uri photoURI = FileProvider.getUriForFile(this,
+                            FILE_PROVIDER_AUTHORITY,
+                            photoFile);
 
-                // Add the URI so the camera can store the image
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    // Add the URI so the camera can store the image
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
 
-                // Launch the camera activity
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                    // Launch the camera activity
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                }
             }
         }
     }
@@ -178,6 +183,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // If the image capture activity was called and was successful
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+
+            if(null==mTempPhotoPath)
+            {
+                Toast.makeText(this, "no camera image path", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             // Process the image and set it to the TextView
             processAndSetImage();
         } else {
@@ -199,8 +211,15 @@ public class MainActivity extends AppCompatActivity {
         mShareFab.setVisibility(View.VISIBLE);
         mClearFab.setVisibility(View.VISIBLE);
 
+        mResultsBitmap = BitmapFactory.decodeFile(mTempPhotoPath);
         // Resample the saved image to fit the ImageView
-        mResultsBitmap = BitmapUtils.resamplePic(this, mTempPhotoPath);
+        //mResultsBitmap = BitmapUtils.resamplePic(this, mTempPhotoPath);
+
+        if(null==mResultsBitmap)
+        {
+            Toast.makeText(this, "no bitmap", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         // Set the new bitmap to the ImageView
         mImageView.setImageBitmap(mResultsBitmap);
@@ -208,7 +227,6 @@ public class MainActivity extends AppCompatActivity {
         // face detection
         EmojiType[] emojiType = detectFace(mResultsBitmap);
         insertFragment(emojiType);
-
     }
 
     private void insertFragment(EmojiType[] emojiType)
