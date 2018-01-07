@@ -1,8 +1,8 @@
 # AdvancedAndroid_Emojify-TLIB.00-StartingCode
 
 ### Advanced Android class, Emojify, is a camera application.
-Our task is to detect and classify face expressions of the following types with Google vision library.
-The following emoji types should be inflated and place over face.
+Our task is to detect and classify (0-1 probability) face expressions of the following types with Google vision library.
+Then, emoji image of the appropriate type should be inflated and place over face.
 
 - Closed-eyes, frown
 - Closed-eyes, smile
