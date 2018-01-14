@@ -69,7 +69,7 @@ public class Emojifier {
 
         if(false==hasLowStorage)
         {
-            emojiType = ClassifyEmojiType(faces);
+            emojiType = ClassifyEmojiType(context, faces);
 
             // FaceView overlay = (FaceView) findViewById(R.id.faceView);
             // overlay.setContent(bitmap, faces);
@@ -82,10 +82,17 @@ public class Emojifier {
         return emojiType;
     }
 
-    private static EmojiType[] ClassifyEmojiType(SparseArray<Face> faces)
+    private static EmojiType[] ClassifyEmojiType(Context context, SparseArray<Face> faces)
     {
         EmojiType[] emojiSelect = new EmojiType[faces.size()];
         float threshold = 0.5f;
+
+        int numOfFaces = faces.size();
+
+        if(0==numOfFaces)
+            Toast.makeText(context, "No faces detected", Toast.LENGTH_SHORT).show();
+
+
         // number of faces
         for (int i = 0; i < faces.size(); ++i) {
             Face face = faces.valueAt(i);
