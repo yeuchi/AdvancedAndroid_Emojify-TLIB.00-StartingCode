@@ -36,7 +36,7 @@ public class Emojifier {
         OPEN_EYE_FROWN,
         OPEN_EYE_SMILE};
 
-    public static EmojiType[] detectFaces(Context context,
+    public static Bitmap detectFaces(Context context,
                                           Bitmap bitmap)
     {
         com.google.android.gms.vision.face.FaceDetector detector = new com.google.android.gms.vision.face.FaceDetector.Builder(context)
@@ -71,29 +71,21 @@ public class Emojifier {
             IntentFilter lowstorageFilter = new IntentFilter(Intent.ACTION_DEVICE_STORAGE_LOW);
             hasLowStorage = context.registerReceiver(null, lowstorageFilter) != null;
 
+            if(true == hasLowStorage)
+            {
+                Toast.makeText(context, R.string.low_storage_error, Toast.LENGTH_LONG).show();
+                return null;
+            }
         }
+        Bitmap resultBitmap = ClassifynOverlayEmoji(context, faces, bitmap);
 
-        EmojiType[] emojiType = null;
-
-        if(false==hasLowStorage)
-        {
-            ClassifynOverlayEmoji(context, faces, bitmap);
-
-            // FaceView overlay = (FaceView) findViewById(R.id.faceView);
-            // overlay.setContent(bitmap, faces);
-
-            // Although detector may be used multiple times for different images, it should be released
-            // when it is no longer needed in order to free native resources.
-            safeDetector.release();
-        }
-        else
-            Toast.makeText(context, R.string.low_storage_error, Toast.LENGTH_LONG).show();
-
-
-        return emojiType;
+        // Although detector may be used multiple times for different images, it should be released
+        // when it is no longer needed in order to free native resources.
+        safeDetector.release();
+        return resultBitmap;
     }
 
-    private static void ClassifynOverlayEmoji(  Context context,
+    private static Bitmap ClassifynOverlayEmoji(Context context,
                                                 SparseArray<Face> faces,
                                                 Bitmap resultBitmap)
     {
@@ -163,6 +155,8 @@ public class Emojifier {
             Bitmap emojiBitmap = BitmapFactory.decodeResource(context.getResources(), EmojiImageAssets.getHeads().get(emojiSelected));
             resultBitmap = addBitmapToFace(resultBitmap, emojiBitmap, face);
         }
+
+        return resultBitmap;
     }
 
     /**

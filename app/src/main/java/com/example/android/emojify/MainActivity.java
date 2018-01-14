@@ -215,12 +215,10 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        // Set the new bitmap to the ImageView
-        mImageView.setImageBitmap(mResultsBitmap);
-
-        // face detection
+        // face detection + overlay
         Context context = this.getApplicationContext();
-        Emojifier.EmojiType[] emojiType = Emojifier.detectFaces(context, mResultsBitmap);
+        mResultsBitmap = Emojifier.detectFaces(context, mResultsBitmap);
+        mImageView.setImageBitmap(mResultsBitmap);
     }
 
     /**
