@@ -221,40 +221,7 @@ public class MainActivity extends AppCompatActivity {
         // face detection
         Context context = this.getApplicationContext();
         Emojifier.EmojiType[] emojiType = Emojifier.detectFaces(context, mResultsBitmap);
-
-        if (null != emojiType ||
-                emojiType.length > 0)
-        {
-            insertFragment(emojiType);
-        }
-        else
-        {
-            Toast.makeText(this, R.string.low_storage_error, Toast.LENGTH_LONG).show();
-            // Log.w(TAG, getString(R.string.low_storage_error));
-        }
     }
-
-    private void insertFragment(Emojifier.EmojiType[] emojiType)
-    {
-        /*
-         * for now, just insert emoji
-         *
-         * next step will want to draw emoji over face and align size, rotation
-         */
-
-        EmojiFragment emojiFragment = new EmojiFragment();
-        if(null!=emojiType && emojiType.length>0)
-        {
-            int i = emojiType[0].ordinal();
-            emojiFragment.setIndex(i);
-        }
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .add(R.id.head_container, emojiFragment)
-                .commit();
-    }
-
-
 
     /**
      * OnClick method for the save button.
