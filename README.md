@@ -1,3 +1,6 @@
+Udacity android nano-degree exercise and starter source code
+
+
 # AdvancedAndroid_Emojify-TLIB.00-StartingCode
 
 ### Advanced Android class, Emojify, is a camera application.
